@@ -3,6 +3,40 @@
 ### Adding a customer prometheus rule to fire an alert when PVC is at 30% capacity
 Source: https://developers.redhat.com/articles/2023/10/03/how-configure-openshift-application-monitoring-and-alerts?source=sso#basic_concepts
 
+Sample PVC resource
+```yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: 'yes'
+    pv.kubernetes.io/bound-by-controller: 'yes'
+    volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
+    volume.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
+  name: postgres-13-awx-postgres-13-0
+  namespace: awx
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: postgres-13-awx
+    app.kubernetes.io/managed-by: awx-operator
+    app.kubernetes.io/name: postgres-13
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+  storageClassName: rook-ceph-block
+  volumeMode: Filesystem
+status:
+  phase: Bound
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 16Gi
+
+```
+
 1. Enable user workload monitoring, configurations, and alert manager
 
 ```yaml
@@ -70,8 +104,9 @@ spec:
 ```
 
 3. Alerts can be seen as below:
-<img width="1589" alt="Screenshot 2024-02-03 at 10 31 59 PM" src="https://github.com/prabhjotbawa/k8s_cheatsheet/assets/42355705/771edc1f-5bbb-4364-abdc-2c8ffb606a41">
 <img width="1589" alt="Screenshot 2024-02-03 at 10 31 54 PM" src="https://github.com/prabhjotbawa/k8s_cheatsheet/assets/42355705/13ab69dd-15c5-451a-86a3-16a3f3f88b24">
+
+<img width="1621" alt="Screenshot 2024-02-03 at 10 50 45 PM" src="https://github.com/prabhjotbawa/k8s_cheatsheet/assets/42355705/68214919-45fe-4a5f-933b-85fd2c846376">
 
 4. Create the Alertmanager configuration to define the external notification system for receiving the alerts created in OpenShift and visible in the OpenShift UI.
 
