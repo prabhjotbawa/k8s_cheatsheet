@@ -125,9 +125,9 @@ spec:
   route:
     receiver: mail
     groupby: [job]
-    group_interval: 5m
-    group_wait: 30s
-    repeat_interval: 2h
+    groupInterval: 5m # Interval between the notifications
+    groupWait: 30s # How long to wait on sending updated notification
+    repeatInterval: 2h # When to send a reperat notification
   receivers:
   - name: mail
     emailConfigs:
