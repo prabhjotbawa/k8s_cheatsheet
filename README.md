@@ -155,42 +155,10 @@ An example
 ```yaml
 kind: AlertmanagerConfig
 metadata:
-  creationTimestamp: '2024-02-05T00:16:47Z'
-  generation: 4
   labels:
     alertmanagerConfig: main
-  managedFields:
-    - apiVersion: monitoring.coreos.com/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:alertmanagerConfig': {}
-        'f:spec':
-          .: {}
-          'f:route':
-            .: {}
-            'f:receiver': {}
-      manager: Mozilla
-      operation: Update
-      time: '2024-02-05T00:16:47Z'
-    - apiVersion: monitoring.coreos.com/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          'f:receivers': {}
-          'f:route':
-            'f:groupInterval': {}
-            'f:groupWait': {}
-            'f:repeatInterval': {}
-      manager: Mozilla
-      operation: Update
-      time: '2024-02-05T00:51:46Z'
   name: alert-notifications
   namespace: awx
-  resourceVersion: '396111984'
-  uid: 298f0409-8f43-4edc-b11c-badd22d2c483
 spec:
   receivers:
     - emailConfigs:
@@ -210,5 +178,45 @@ spec:
     repeatInterval: 30s
 ```
 If you are using gmail, an app paaword can be set up to configure the email server but it's not secure. Instructions: https://support.google.com/mail/answer/185833?hl=en#zippy=%2Cwhy-you-may-need-an-app-password%2Cremove-app-passwords
+
+Another popular way to send notifications is slack alerts. An example:
+```yaml
+---
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: alert-notifications
+  namespace: awx
+  labels:
+    alertmanagerConfig: main
+spec:
+  route:
+    receiver: slack-alert
+    groupby:
+      - job
+    groupInterval: 5m
+    groupWait: 30s
+    repeatInterval: 2h
+  receivers:
+    - name: slack-alert
+      slackConfigs:
+        - channel: si-sigma-sandbox
+          apiURL:
+            name: slack-details
+            key: url
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: slack-details
+  namespace: awx
+stringData:
+  url: "webhook url"
+
+```
+
+Instructions on how to configure the alerts on Slack can be found: https://www.redhat.com/en/blog/how-to-integrate-openshift-namespace-monitoring-and-slack#7
+Details about other fields can be found in the CRD: https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
 
 
