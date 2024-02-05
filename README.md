@@ -150,5 +150,65 @@ stringData:
 ```
 
 
+An example
+
+```yaml
+kind: AlertmanagerConfig
+metadata:
+  creationTimestamp: '2024-02-05T00:16:47Z'
+  generation: 4
+  labels:
+    alertmanagerConfig: main
+  managedFields:
+    - apiVersion: monitoring.coreos.com/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:alertmanagerConfig': {}
+        'f:spec':
+          .: {}
+          'f:route':
+            .: {}
+            'f:receiver': {}
+      manager: Mozilla
+      operation: Update
+      time: '2024-02-05T00:16:47Z'
+    - apiVersion: monitoring.coreos.com/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:receivers': {}
+          'f:route':
+            'f:groupInterval': {}
+            'f:groupWait': {}
+            'f:repeatInterval': {}
+      manager: Mozilla
+      operation: Update
+      time: '2024-02-05T00:51:46Z'
+  name: alert-notifications
+  namespace: awx
+  resourceVersion: '396111984'
+  uid: 298f0409-8f43-4edc-b11c-badd22d2c483
+spec:
+  receivers:
+    - emailConfigs:
+        - authPassword:
+            key: password
+            name: mail-password
+          authUsername: prabhjotbawa@gmail.com
+          from: prabhjotbawa@gmail.com
+          hello: smtp.gmail.com
+          smarthost: 'smtp.gmail.com:587'
+          to: prabhjotbawa@gmail.com
+      name: mail
+  route:
+    groupInterval: 1m
+    groupWait: 30s
+    receiver: mail
+    repeatInterval: 30s
+```
+If you are using gmail, an app paaword can be set up to configure the email server but it's not secure. Instructions: https://support.google.com/mail/answer/185833?hl=en#zippy=%2Cwhy-you-may-need-an-app-password%2Cremove-app-passwords
 
 
