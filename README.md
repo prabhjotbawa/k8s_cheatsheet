@@ -37,6 +37,20 @@ status:
 
 ```
 
+
+### Grafana and Prometheus cpu/memory usage/allocated resource/limit query
+Requests/ allocatable/capacity promql query
+
+```
+sum(kube_pod_container_resource_requests{resource='cpu'}) by (node) : Returns the  resource request allocated per node
+kube_node_status_allocatable{resource='cpu'} : Returns cpu that can be allocated by k8s
+kube_node_status_capacity{resource='cpu'}: Returns the cpu capacity of a node
+
+Ref: https://gist.github.com/max-rocket-internet/6a05ee757b6587668a1de8a5c177728b
+
+Good doc from datadog on metrics basics: https://github.com/DataDog/the-monitor/tree/master/openshift
+```
+
 1. Enable user workload monitoring, configurations, and alert manager
 
 ```yaml
@@ -219,4 +233,15 @@ stringData:
 Instructions on how to configure the alerts on Slack can be found: https://www.redhat.com/en/blog/how-to-integrate-openshift-namespace-monitoring-and-slack#7
 Details about other fields can be found in the CRD: https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
 
+### Metrics
+
+Good doc from datadog: https://github.com/DataDog/the-monitor/tree/master/openshift
+
+Below is also helpful
+**Requests/ allocatable/capacity promql query**
+sum(kube_pod_container_resource_requests{resource='cpu'}) by (node) : Returns the  resource request allocated per node
+kube_node_status_allocatable{resource='cpu'} : Returns cpu that can be allocated by k8s
+kube_node_status_capacity{resource='cpu'}: Returns the cpu capacity of a node
+
+Referece document: https://gist.github.com/max-rocket-internet/6a05ee757b6587668a1de8a5c177728b
 
