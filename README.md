@@ -239,9 +239,12 @@ Good doc from datadog: https://github.com/DataDog/the-monitor/tree/master/opensh
 
 Below is also helpful
 **Requests/ allocatable/capacity promql query**
+
+```
 sum(kube_pod_container_resource_requests{resource='cpu'}) by (node) : Returns the  resource request allocated per node
 kube_node_status_allocatable{resource='cpu'} : Returns cpu that can be allocated by k8s
 kube_node_status_capacity{resource='cpu'}: Returns the cpu capacity of a node
+```
 
 Referece document: https://gist.github.com/max-rocket-internet/6a05ee757b6587668a1de8a5c177728b
 
