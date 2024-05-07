@@ -246,5 +246,14 @@ kube_node_status_allocatable{resource='cpu'} : Returns cpu that can be allocated
 kube_node_status_capacity{resource='cpu'}: Returns the cpu capacity of a node
 ```
 
+** Get pod status
+```
+kube_pod_labels{namespace="openshift-operators",label_job_name=""} * on(pod) group_right kube_pod_status_ready{namespace="openshift-operators"} == 1
+```
+
+** Get pod image and name
+```
+kube_pod_labels{namespace="openshift-operators"} * on(pod) group_right kube_pod_container_info{}
+```
 Referece document: https://gist.github.com/max-rocket-internet/6a05ee757b6587668a1de8a5c177728b
 
