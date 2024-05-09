@@ -257,3 +257,13 @@ kube_pod_labels{namespace="openshift-operators"} * on(pod) group_right kube_pod_
 ```
 Referece document: https://gist.github.com/max-rocket-internet/6a05ee757b6587668a1de8a5c177728b
 
+### ServiceMonitors
+Good document explaining the concept: https://michaelkotelnikov.medium.com/monitoring-services-in-openshift-using-prometheus-25a7fe81f3a9
+
+- Service exports metrics usign the jmx exporter, services can do themselves or add another pod that does that.
+- Create servicemonitor to push metrics to prometheus endpoint,
+
+  OR
+  The service can directly push to the prometheus endpoint
+
+  Check the cr_status_service as an example.
