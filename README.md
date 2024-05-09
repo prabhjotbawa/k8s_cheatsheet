@@ -261,7 +261,16 @@ Referece document: https://gist.github.com/max-rocket-internet/6a05ee757b6587668
 Good document explaining the concept: https://michaelkotelnikov.medium.com/monitoring-services-in-openshift-using-prometheus-25a7fe81f3a9
 
 - Service exports metrics usign the jmx exporter, services can do themselves or add another pod that does that.
-- Create servicemonitor to push metrics to prometheus endpoint,
+- Create servicemonitor to connect it with the monitioring stack.
+
+```
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics (Path service is pushing the metrics to, normally /metrics)
+      port: <Name of the port the service is running or listening>
+      scheme: http
+```
 
   OR
   The service can directly push to the prometheus endpoint
