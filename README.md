@@ -262,6 +262,7 @@ Good document explaining the concept: https://michaelkotelnikov.medium.com/monit
 
 - Service exports metrics usign the jmx exporter, services can do themselves or add another pod that does that.
 - Create servicemonitor to connect it with the monitioring stack.
+- Servicemonitors point to a service which points to a deployment/app
 
 ```
 spec:
@@ -276,3 +277,75 @@ spec:
   The service can directly push to the prometheus endpoint
 
   Check the cr_status_service as an example.
+
+### Service
+Service is an abstraction concept which seperates the networking layer from the actual deployments. If an application wants to connect to a database, it shouldn't worry what deployments are running etc
+hence the layer of abstraction. High level workflow:
+Service -> Deployment -> Pods
+An example:
+```
+kind: Service
+apiVersion: v1
+metadata:
+  name: sample-service
+  namespace: test
+  labels:
+    name: sample-service
+  annotations:
+    getambassador.io/config: |
+
+
+      ---
+      apiVersion: ambassador/v3alpha1
+      kind: Mapping
+      name: sample-service_v1_health_
+      service: "https://sample-service.test.svc:8443"
+
+      prefix: 8
+
+      rewrite: /q/health
+      add_response_headers:
+        Strict-Transport-Security:
+           value:  max-age=15552000; includeSubDomains
+        X-Frame-Options: 
+           value: SAMEORIGIN
+      bypass_auth: true
+      timeout_ms: 600000
+      idle_timeout_ms: 600000
+spec:
+  clusterIP: 172.30.230.82
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: sample-service8443
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+    - name: sample-service8081
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+    - name: sample-service8080
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: sample-service7800
+      protocol: TCP
+      port: 7800
+      targetPort: 7800
+  internalTrafficPolicy: Cluster
+  clusterIPs:
+    - 172.30.230.82
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/name: sample-service
+```
+
+So, in the above eaxmple, the service targets deployments/pod running with label `app.kubernetes.io/name: sample-service`
+Also, to note, it has an ambassador config which exposes the service to the internet, and gives it an external url defined by the `prefix`.
+In this case, hitting the url `https://some-domain/<prefix> will redirect the request to this service and `\q\health` endpoint.
+
+Internally, this service can be accessed (if not blocked by a network policy) by any other service and is equivant to running a curl command
+`curl -v https://sample-service.test.svc:8443 -k` over TCP and `curl -v https://sample-service.test.svc:8081 -k` over http.
