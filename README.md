@@ -349,3 +349,8 @@ In this case, hitting the url `https://some-domain/<prefix> will redirect the re
 
 Internally, this service can be accessed (if not blocked by a network policy) by any other service and is equivant to running a curl command
 `curl -v https://sample-service.test.svc:8443 -k` over TCP and `curl -v https://sample-service.test.svc:8081 -k` over http.
+
+### Mutual TLS flow
+This can achived either creating resources via automation or using solutions like Istio, At the core:
+- There is a issuing authority or CA
+- Create a Certificate -> create a CR using (annotate to use the authority) -> issuing authority creates the cerrificate -> secret has the CA cert, cert and the keys -> services use them to present and authenticate, authorization is via serviceaccoun
